@@ -25,7 +25,7 @@ inline double get_rand_double(){
 
 inline void UpdateProgress(int h)
 {
-    static int progress = 0;
+    static double progress = 1.0;
     int barWidth = 70;
 
     std::cout << "[";
@@ -36,6 +36,6 @@ inline void UpdateProgress(int h)
         else std::cout << " ";
     }
     std::cout << "] " << int(progress * 100.0 / h) << " %\r";
-	std::cout.flush();
-    progress += 1;
+    std::cout.flush();
+    progress += 1.0 / h;
 };

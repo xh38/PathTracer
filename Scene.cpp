@@ -7,14 +7,12 @@
 #include <array>
 
 
-Intersection Scene::get_closest_intersection(Ray& ray) {
-	Intersection inter{};
-	mesh_->intersect(ray, inter);
-	return inter;
+bool Scene::get_closest_intersection(Ray& ray, Intersection& inter) {
+	return mesh_->intersect(ray, inter);
 }
 
-Intersection Scene::get_closest_intersection_bvh(Ray& ray) {
-	return this->BVH->intersect(ray);
+bool Scene::get_closest_intersection_bvh(Ray& ray, Intersection& inter) {
+	return this->BVH->intersect(ray, inter);
 }
 
 

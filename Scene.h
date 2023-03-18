@@ -17,8 +17,8 @@ public:
 	BVHAccel* BVH;
 	int width_, height_;
 	//render func
-	Intersection get_closest_intersection(Ray& ray);
-	Intersection get_closest_intersection_bvh(Ray& ray);
+	bool get_closest_intersection(Ray& ray, Intersection& inter);
+	bool get_closest_intersection_bvh(Ray& ray, Intersection& inter);
 	//bool intersect(Ray& ray, double t_near, double t_far);
 	void sample_light(Intersection& light_sample, double& pdf);
 

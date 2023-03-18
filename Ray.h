@@ -6,6 +6,7 @@ public:
 	Ray() {}
 	Ray(Vec3 origin, Vec3 direction) : origin(origin), direction(normalize(direction)) {}
 	static Vec3 reflect(Vec3 in, Vec3 normal);
+	static Vec3 refract(Vec3 in, Vec3 normal);
 	Vec3 operator()(double t) const { return origin + direction * t; }
 };
 

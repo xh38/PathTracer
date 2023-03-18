@@ -35,8 +35,8 @@ public:
 	BVHAccel(std::vector<std::shared_ptr<Object>>& p);
 	std::shared_ptr<BVHNode> recurisve_build(std::vector<std::shared_ptr<Object>> p);
 
-	Intersection intersect(Ray& ray);
-	Intersection intersect(std::shared_ptr<BVHNode> node, Ray& ray);
+	bool intersect(Ray& ray, Intersection& inter);
+	bool intersect(std::shared_ptr<BVHNode> node, Ray& ray, Intersection& inter);
 
 	int count_leaves();
 

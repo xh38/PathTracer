@@ -34,6 +34,8 @@ public:
 	Vec3 specular_brdf(Vec3 normal, Vec3 in, Vec3 out);
 	Vec3 lambertian_brdf(Vec3 normal, Vec3 out);
 
+	double schlick_fresnel(Vec3 in, Vec3 normal, double n1, double n2);
+
 private:
 	Vec3 to_world(const Vec3& local, const Vec3& normal);
 };

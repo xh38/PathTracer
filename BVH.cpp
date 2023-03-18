@@ -64,62 +64,58 @@ std::shared_ptr<BVHNode> BVHAccel::recurisve_build(std::vector<std::shared_ptr<O
 	return node;
 }
 
-Intersection BVHAccel::intersect(Ray& ray) {
+bool BVHAccel::intersect(Ray& ray, Intersection& inter) {
 	if(root == nullptr)
 	{
 		throw std::runtime_error("root is nullptr");
 	}
-	return intersect(root, ray);
+	return intersect(root, ray, inter);
 }
 
-Intersection BVHAccel::intersect(std::shared_ptr<BVHNode> node, Ray& ray) {
-	Intersection return_val{};
+bool BVHAccel::intersect(std::shared_ptr<BVHNode> node, Ray& ray, Intersection& inter) {
 	//node is nullptr
+	bool flag = false;
 	if (node==nullptr)
 	{
-		return return_val;
+		return flag;
 	}
 
 	if (!node->box.intersect(ray))
 	{
-		return return_val;
+		return flag;
 	}
 
 	if(node->left == nullptr && node->right == nullptr)
 	{
-		node->object->intersect(ray, return_val);
-		/*if (return_val.happened)
-		{
-			std::cout << "hit " << return_val.p_m->name << std::endl;
-		}*/
-		//std::cout << "p_min: " << node->box.p_min_ << std::endl;
-		//std::cout << "p_max: " << node->box.p_max_ << std::endl;
-		//std::cout << "aabb_min: " << node->object->get_aabb().p_min_ << std::endl;
-		//std::cout << "aabb_max: " << node->object->get_aabb().p_max_ << std::endl;
-		return return_val;
+		return node->object->intersect(ray, inter);
 	}
 
-	Intersection left = intersect(node->left, ray);
-	Intersection right = intersect(node->right, ray);
-	// fix miss light!
-	if (left.happened && right.happened)
+	Intersection left{}, right{};
+	bool l = intersect(node->left, ray, left);
+	bool r = intersect(node->right, ray, right);
+	if (l && r)
 	{
-		if (left.t - right.t > eps) return_val = right;
-		else if (right.t - left.t > eps) return_val = left;
+		if (left.t - right.t > eps) inter = right;
+		else if (right.t - left.t > eps) inter = left;
 		else
 		{
-			if (left.p_m->is_light()) return_val = left;
-			else return_val = right;
+			if (left.p_m->is_light()) inter = left;
+			else inter = right;
 		}
-	} else if (left.happened)
+		flag = true;
+	}
+	// fix miss light!
+	else if (l)
 	{
-		return_val = left;
-	} else if (right.happened)
+		inter = left;
+		flag = true;
+	} else if (r)
 	{
-		return_val = right;
+		inter = right;
+		flag = true;
 	}
 	
-	return return_val;
+	return flag;
 	
 }
 

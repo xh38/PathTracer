@@ -28,8 +28,11 @@ Vec3 Material::specular_importance_sample(Vec3 in_dir, Vec3 normal, double& pdf)
 	double x1 = get_rand_double();
 	double x2 = get_rand_double();
 	double phi = 2 * pi * x2;
-	double z = 1 / std::pow(x1, Ns + 1);
-	throw std::runtime_error("specular_importance_sample not impled");
+	double z = std::pow(x1, 1/(Ns + 1));
+	double sin_theta = std::sqrt(1.0 - z * z);
+	Vec3 local_ray_dir{ sin_theta * std::cos(phi), sin_theta * std::sin(phi), z };
+	pdf = (Ns + 1) * std::pow(z, Ns) * 0.5 / pi;
+	return to_world(local_ray_dir, perfect_reflection);
 }
 
 Vec3 Material::specular_brdf(Vec3 normal, Vec3 in, Vec3 out) {
@@ -46,6 +49,13 @@ Vec3 Material::lambertian_brdf(Vec3 normal, Vec3 out) {
 		return Kd / pi * dot(out, normal);
 	}
 	return { 0., 0.,0. };
+}
+
+double Material::schlick_fresnel(Vec3 in, Vec3 normal, double n1, double n2) {
+	double r0 = pow((n1 - n2) / (n1 + n2), 2);
+	double costheta = dot(-in, normal);
+	double reflection = r0 + (1.0f - r0) * pow((1.0f - costheta), 5);
+	return reflection;
 }
 
 Vec3 Material::to_world(const Vec3& local, const Vec3& normal) {

@@ -17,6 +17,7 @@ private:
 
 	void resize_frame_buffer(int x, int y);
 	Vec3 cal_direct(Ray& ray, Scene& scene, const Intersection& ray_inter);
+	Vec3 sample_reflection_ray(Ray& ray, const Intersection& ray_inter, double& pdf);
 	Vec3 cal_indirect(Ray& ray, Scene& scene, const Intersection& ray_inter);
 	
 };

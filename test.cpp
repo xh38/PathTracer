@@ -6,20 +6,18 @@
 int main() {
     //std::string scene_name = R"(stairscase)";
     //std::string scene_name = R"(cornell-box-test)";
-    std::string scene_name = R"(veach-mis)";
-    // build Scene
-    Scene s(scene_name);
-    std::cout << "Scene " << scene_name << " build done!" << std::endl;
+    std::string veach_mis_name = R"(veach-mis)";
+    
 
-    MonteCarloPathTracer path_tracer(0.8, 512);
-    //Ray test_ray = s.p_camera_->sample_ray(4, 60);
-    //Intersection inter = s.get_closest_intersection_bvh(test_ray);
-    //Vec3 color = path_tracer.trace_ray(test_ray, s, inter);
-    //std::cout << color;
-    //if (inter.happened && inter.p_m->is_light())
-    //{
-    //    std::cout << "hit light" << std::endl;
-    //}
-    path_tracer.render(s);
-    path_tracer.write_render_result(scene_name, s.p_camera_->width_, s.p_camera_->height_);
+    Scene veach_mis(veach_mis_name);
+    MonteCarloPathTracer mis_path_tracer(0.8, 5120);
+    mis_path_tracer.render(veach_mis);
+    mis_path_tracer.write_render_result(veach_mis_name + "5120", veach_mis.p_camera_->width_, veach_mis.p_camera_->height_);
+
+    std::string cornell_box_name = R"(cornell-box)";
+    Scene cornell_box(cornell_box_name);
+    MonteCarloPathTracer box_path_tracer(0.8, 512);
+    box_path_tracer.render(cornell_box);
+    box_path_tracer.write_render_result(cornell_box_name + "512", cornell_box.p_camera_->width_, cornell_box.p_camera_->height_);
+
 }
