@@ -7,6 +7,6 @@
 class Object {
 public:
 	Object() {}
-	virtual bool intersect(Ray& r, Intersection& inter) = 0;
+	virtual bool intersect(Ray& r, std::shared_ptr<Intersection>& inter) = 0;
 	virtual AABB get_aabb() = 0;
 };

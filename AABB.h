@@ -12,7 +12,7 @@ public:
 	}
 	static AABB merge(AABB box1, AABB box2);
 	static AABB merge(AABB box, Vec3 p);
-	double get_middle(int axis);
+	float get_middle(int axis);
 	bool intersect(Ray& ray);
 	int get_max_extent();
 };

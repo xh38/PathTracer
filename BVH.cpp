@@ -1,6 +1,6 @@
 #include "BVH.h"
 
-#include <utility>
+#include <queue>
 
 BVHAccel::BVHAccel(std::vector<std::shared_ptr<Object>>& p) {
 	std::cout << "build BVH" << std::endl;
@@ -64,7 +64,7 @@ std::shared_ptr<BVHNode> BVHAccel::recurisve_build(std::vector<std::shared_ptr<O
 	return node;
 }
 
-bool BVHAccel::intersect(Ray& ray, Intersection& inter) {
+bool BVHAccel::intersect(Ray& ray, std::shared_ptr<Intersection>& inter) {
 	if(root == nullptr)
 	{
 		throw std::runtime_error("root is nullptr");
@@ -72,41 +72,41 @@ bool BVHAccel::intersect(Ray& ray, Intersection& inter) {
 	return intersect(root, ray, inter);
 }
 
-bool BVHAccel::intersect(std::shared_ptr<BVHNode> node, Ray& ray, Intersection& inter) {
+bool BVHAccel::intersect(const std::shared_ptr<BVHNode>& node, Ray& ray, std::shared_ptr<Intersection>& inter) {
 	//node is nullptr
 	bool flag = false;
-	if (node==nullptr)
+	if (node==nullptr || !node->box.intersect(ray))
 	{
 		return flag;
 	}
 
-	if (!node->box.intersect(ray))
-	{
-		return flag;
-	}
-
-	if(node->left == nullptr && node->right == nullptr)
+	if(node->is_leaf())
 	{
 		return node->object->intersect(ray, inter);
 	}
 
-	Intersection left{}, right{};
+	std::shared_ptr<Intersection> left;
+	std::shared_ptr<Intersection> right;
 	bool l = intersect(node->left, ray, left);
 	bool r = intersect(node->right, ray, right);
 	if (l && r)
 	{
-		if (left.t - right.t > eps) inter = right;
-		else if (right.t - left.t > eps) inter = left;
+		if (float_equal(left->t, right->t)) {
+			if (left->p_m->is_light())
+			{
+				inter = left;
+			} else
+			{
+				inter = right;
+			}
+		}
 		else
 		{
-			if (left.p_m->is_light()) inter = left;
-			else inter = right;
+			inter = left->t < right->t ? left : right;
 		}
 		flag = true;
 	}
-	// fix miss light!
-	else if (l)
-	{
+	else if (l){
 		inter = left;
 		flag = true;
 	} else if (r)
@@ -114,12 +114,33 @@ bool BVHAccel::intersect(std::shared_ptr<BVHNode> node, Ray& ray, Intersection& 
 		inter = right;
 		flag = true;
 	}
-	
 	return flag;
-	
+
 }
 
 int BVHAccel::count_leaves() {
+	//if (root->left != nullptr)
+	//{
+	//	std::cout << "left: " << root->left->count() << std::endl;
+	//}
+	//if (root->right != nullptr)
+	//{
+	//	std::cout << "right: " << root->right->count() << std::endl;
+	//}
 	return root->count();
+}
+
+int BVHAccel::max_depth(const std::shared_ptr<BVHNode>& node) {
+	if (node == nullptr)
+	{
+		return 0;
+	}
+	int max_l = max_depth(node->left);
+	int max_r = max_depth(node->right);
+	return std::max(max_l, max_r) + 1;
+}
+
+int BVHAccel::depth() {
+	return max_depth(root);
 }
 

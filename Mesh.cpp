@@ -4,26 +4,28 @@ TriangleMesh::TriangleMesh(std::vector<std::shared_ptr<Object>>& triangles) {
 	triangles_ = triangles;
 }
 
-bool TriangleMesh::intersect(Ray& ray, Intersection& inter) {
+bool TriangleMesh::intersect(Ray& ray, std::shared_ptr<Intersection>& inter) {
+	bool flag = false;
 	for (auto& triangle : triangles_)
 	{
-		Intersection temp{};
+		std::shared_ptr<Intersection> temp = std::make_shared<Intersection>();
 		triangle->intersect(ray, temp);
-		if (temp.happened)
+		if (temp->happened)
 		{
-			if (inter.t - temp.t > eps)
+			if (inter->t - temp->t > eps)
 			{
 				inter = temp;
-			} else if (double_equal(inter.t, temp.t))
+			} else if (float_equal(inter->t, temp->t))
 			{
-				if (temp.p_m->is_light())
+				if (temp->p_m->is_light())
 				{
 					inter = temp;
 				}
 			}
+			flag |= true;
 		}
 	}
-	return true;
+	return flag;
 }
 
 AABB TriangleMesh::get_aabb() {

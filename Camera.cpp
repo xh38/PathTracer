@@ -1,15 +1,15 @@
 #include "Camera.h"
 
-Camera::Camera(Vec3 eye, Vec3 lookat, Vec3 up, double fovy, int width, int height) {
+Camera::Camera(Vec3 eye, Vec3 lookat, Vec3 up, float fovy, int width, int height) {
 	position_ = eye;
 	width_ = width;
 	height_ = height;
 
-	const double aspect_ratio = 1.0 * width_ / height_;
-	const double theta = degrees_to_radians(fovy);
-	const double h = tan(theta / 2.0);
-	const double viewport_h = 2.0 * h;
-	const double viewport_w = aspect_ratio * viewport_h;
+	const float aspect_ratio = 1.0 * width_ / height_;
+	const float theta = degrees_to_radians(fovy);
+	const float h = tan(theta / 2.0);
+	const float viewport_h = 2.0 * h;
+	const float viewport_w = aspect_ratio * viewport_h;
 
 	const Vec3 w = normalize(eye - lookat);
 	const Vec3 u = normalize(cross(up, w));
@@ -23,15 +23,15 @@ Camera::Camera(Vec3 eye, Vec3 lookat, Vec3 up, double fovy, int width, int heigh
 }
 
 Ray Camera::get_ray(const int x, const int y) {
-	const double s = 1.0 * (x + 0.5) / width_;
-	const double t = 1.0 * (y + 0.5) / height_;
+	const float s = 1.0 * (x + 0.5) / width_;
+	const float t = 1.0 * (y + 0.5) / height_;
 
 	return { position_, upper_left_corner_ + s * horizontal_ - t * vertical_ - position_ };
 }
 
 Ray Camera::sample_ray(int x, int y) {
-	const double s = 1.0 * (x + get_rand_double()) / width_;
-	const double t = 1.0 * (y + get_rand_double()) / height_;
+	const float s = 1.0 * (x + get_rand_float()) / width_;
+	const float t = 1.0 * (y + get_rand_float()) / height_;
 
 	return { position_, upper_left_corner_ + s * horizontal_ - t * vertical_ - position_ };
 }

@@ -6,8 +6,9 @@ struct BVHNode {
 	std::shared_ptr<BVHNode> left;
 	std::shared_ptr<BVHNode> right;
 	std::shared_ptr<Object> object;
-	double area;
+	bool is_leaf() { return left == nullptr && right == nullptr; }
 	//int num;
+
 	int count() {
 		int count = 0;
 		if (left == nullptr && right == nullptr)
@@ -35,9 +36,11 @@ public:
 	BVHAccel(std::vector<std::shared_ptr<Object>>& p);
 	std::shared_ptr<BVHNode> recurisve_build(std::vector<std::shared_ptr<Object>> p);
 
-	bool intersect(Ray& ray, Intersection& inter);
-	bool intersect(std::shared_ptr<BVHNode> node, Ray& ray, Intersection& inter);
+	bool intersect(Ray& ray, std::shared_ptr<Intersection>& inter);
+	bool intersect(const std::shared_ptr<BVHNode>& node, Ray& ray, std::shared_ptr<Intersection>& inter);
 
 	int count_leaves();
+	int max_depth(const std::shared_ptr<BVHNode>& node);
+	int depth();
 
 };  

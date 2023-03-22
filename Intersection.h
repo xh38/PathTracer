@@ -5,19 +5,16 @@
 
 class Intersection {
 public:
-	Intersection();
+	Intersection(){
+		happened = false;
+		t = std::numeric_limits<float>::max();
+	}
 	bool happened;
-	double t;
+	float t;
 	Vec3 point;
 	Vec3 normal;
 	std::shared_ptr<Material> p_m;
+	tex_coord t0, t1, t2;
 	Vec3 v0, v1, v2;
+	float u, v;
 };
-
-inline Intersection::Intersection() {
-	happened = false;
-	t = std::numeric_limits<double>::max();
-	point = normal = { 0, 0, 0 };
-	p_m = nullptr;
-	v0 = v1 = v2 = { 0, 0, 0 };
-}

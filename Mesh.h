@@ -9,7 +9,6 @@ public:
 	TriangleMesh(std::vector<std::shared_ptr<Object>>& triangles);
 	std::vector<std::shared_ptr<Object>> triangles_;
 	
-
-	bool intersect(Ray& ray, Intersection& inter) override;
+	bool intersect(Ray& ray, std::shared_ptr<Intersection>& inter) override;
 	AABB get_aabb() override;
 };

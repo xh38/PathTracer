@@ -13,6 +13,7 @@ public:
 	float Ns, Ni;
 	bool hasEmit;
 	Vec3 radiance;
+	bool hasTexture;
 	Texture texture;
 
 	Vec3 reflect(const Vec3& in, const Vec3& normal) {
@@ -27,14 +28,18 @@ public:
 		return radiance;
 	}
 
-	Vec3 uniform_sample(Vec3 in_dir, Vec3 normal, double& pdf);
-	Vec3 cosine_weighted_sample(Vec3 in_dir, Vec3 normal, double& pdf);
-	Vec3 specular_importance_sample(Vec3 in_dir, Vec3 normal, double& pdf);
+	Vec3 uniform_sample(Vec3 in_dir, Vec3 normal, float& pdf);
+	Vec3 cosine_weighted_sample(Vec3 in_dir, Vec3 normal, float& pdf);
+	Vec3 specular_importance_sample(Vec3 in_dir, Vec3 normal, float& pdf);
 
 	Vec3 specular_brdf(Vec3 normal, Vec3 in, Vec3 out);
 	Vec3 lambertian_brdf(Vec3 normal, Vec3 out);
 
-	double schlick_fresnel(Vec3 in, Vec3 normal, double n1, double n2);
+	float specular_pdf(Vec3 sampled, Vec3 reflected);
+	float cosine_weighted_pdf(Vec3 sampled, Vec3 normal);
+	float schlick_fresnel(Vec3 in, Vec3 normal, float n1, float n2);
+
+	bool refract(Vec3 in, Vec3 normal, float n1, float n2, Vec3& refract_dir);
 
 private:
 	Vec3 to_world(const Vec3& local, const Vec3& normal);
